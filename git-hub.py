@@ -1,3 +1,4 @@
+from email import header
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from datetime import datetime, date
@@ -226,11 +227,11 @@ def abrir_docente():
               activeforeground=C("texto_barra"), relief="flat", bd=0,
               cursor="hand2", padx=10, pady=11).pack(side="bottom", fill="x", padx=10, pady=14)
 
-    header_doc = tk.Frame(zona_derecha_doc, bg=C("encabezado"), height=76)
+    header_doc = tk.Frame(zona_derecha_doc, bg=C("encabezado"), height=90)
     header_doc.pack(fill="x")
     header_doc.pack_propagate(False)
-    titulo_header_doc = tk.Label(header_doc, text="PANEL DE DOCENTE",
-                                 font=("Segoe UI", 17, "bold"),
+    titulo_header_doc = tk.Label(header_doc, text="¡Bienvenido, Docente! | Primaria Nezahualcóyotl",
+                                 font=("Segoe UI", 20, "bold"),
                                  bg=C("encabezado"), fg=C("texto"))
     titulo_header_doc.pack(side="left", padx=22)
 
@@ -244,8 +245,8 @@ def abrir_docente():
                                font=("Segoe UI", 9, "bold"), relief="flat",
                                bd=0, cursor="hand2", padx=12, pady=8)
     boton_tema_doc.pack(side="right", padx=(5, 18), pady=16)
-    usuario_doc = tk.Label(header_doc, text="●  Docente",
-                           font=("Segoe UI", 10, "bold"),
+    usuario_doc = tk.Label(header_doc, text="👤  Docente",
+                           font=("Segoe UI", 13, "bold"),
                            bg=C("encabezado"), fg=C("verde"))
     usuario_doc.pack(side="right", padx=8)
     tk.Frame(zona_derecha_doc, bg=C("borde"), height=1).pack(fill="x")
@@ -722,10 +723,10 @@ def abrir_director():
               activeforeground=C_DIR("texto_barra"), relief="flat", bd=0,
               cursor="hand2", padx=10, pady=11).pack(side="bottom", fill="x", padx=10, pady=14)
 
-    header = tk.Frame(zona_derecha, bg=C_DIR("encabezado"), height=76)
+    header = tk.Frame(zona_derecha, bg=C_DIR("encabezado"), height=90)
     header.pack(fill="x")
     header.pack_propagate(False)
-    titulo_header = tk.Label(header, text="PANEL DE DIRECCION", font=("Segoe UI", 17, "bold"),
+    titulo_header = tk.Label(header, text="¡Bienvenido, Director! | Primaria Nezahualcóyotl", font=("Segoe UI", 20, "bold"),
                              bg=C_DIR("encabezado"), fg=C_DIR("texto"))
     titulo_header.pack(side="left", padx=22)
     boton_tema_dir = tk.Button(header, text="☀  Tema claro",
@@ -733,7 +734,7 @@ def abrir_director():
                                font=("Segoe UI", 9, "bold"), relief="flat",
                                bd=0, cursor="hand2", padx=12, pady=8)
     boton_tema_dir.pack(side="right", padx=(5, 18), pady=16)
-    usuario = tk.Label(header, text="● Director ", font=("Segoe UI", 10, "bold"),
+    usuario = tk.Label(header, text="👤 Director ", font=("Segoe UI", 13, "bold"),
                        bg=C_DIR("encabezado"), fg=C_DIR("verde"))
     usuario.pack(side="right", padx=8)
     tk.Frame(zona_derecha, bg=C_DIR("borde"), height=1).pack(fill="x")
@@ -1027,7 +1028,7 @@ etiqueta_primaria = tk.Label(datos_escuela, text="PRIMARIA", font=("Segoe UI", 9
 etiqueta_escuela = tk.Label(datos_escuela, text="NEZAHUALCÓYOTL", font=("Segoe UI", 12, "bold"), bg=BLANCO, fg=AZUL, anchor="w"); etiqueta_escuela.pack(fill="x", pady=(1, 0))
 separador = tk.Frame(tarjeta, bg="#E5EBF2", height=1); separador.pack(fill="x", padx=32, pady=(0, 14))
 cuerpo = tk.Frame(tarjeta, bg=BLANCO); cuerpo.pack(fill="both", expand=True, padx=32)
-titulo_bienvenida = tk.Label(cuerpo, text="Bienvenido al sistema", font=("Segoe UI", 17, "bold"), bg=BLANCO, fg=TEXTO); titulo_bienvenida.pack(anchor="w")
+titulo_bienvenida = tk.Label(cuerpo, text="Bienvenido a la Escuela Primaria Nezahualcóyotl", font=("Segoe UI", 20, "bold"), bg=BLANCO, fg=AZUL); titulo_bienvenida.pack(anchor="w", pady=(0, 4))
 etiqueta_usuario = tk.Label(cuerpo, text="INGRESA TU USUARIO", font=("Segoe UI", 9, "bold"), bg=BLANCO, fg=AZUL); etiqueta_usuario.pack(anchor="w", pady=(12, 5))
 frame_user = tk.Frame(cuerpo, bg=CAMPO, highlightthickness=1, highlightbackground="#DCE5F0"); frame_user.pack(fill="x", ipady=2)
 icono_usuario = tk.Label(frame_user, text="♟", font=("Segoe UI", 16), bg=CAMPO, fg=AZUL_CLARO); icono_usuario.pack(side="left", padx=(12, 8))
