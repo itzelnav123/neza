@@ -280,7 +280,6 @@ def abrir_docente():
 
     estilo = ttk.Style()
     estilo.theme_use("clam")
-
     def configurar_estilos():
         estilo.configure("Treeview", background=C("panel"), foreground=C("texto"),
                          fieldbackground=C("panel"), rowheight=34,
