@@ -38,6 +38,75 @@ def conectar():
         )
 
         return None
+#VALENTINA GUTIERREZ ROMERO · AGREGUE EL SCRIPT DE LA BASE DE DATOS 
+'''CREATE DATABASE sistema_alerta_temprana;
+USE sistema_alerta_temprana;
+
+CREATE TABLE grupos (
+    id_grupo INT PRIMARY KEY,
+    nombre_grupo VARCHAR(10),
+    grado INT, 
+    grupo CHAR(1)
+);
+
+CREATE TABLE alumnos (
+    id_alumno INT PRIMARY KEY,
+    nombre VARCHAR(40),
+    apellido VARCHAR(60),
+    id_grupo INT,
+    FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo)
+);
+
+CREATE TABLE asistencias (
+    id_asistencia INT PRIMARY KEY,
+    id_alumno INT,
+    fecha DATE,
+    estado VARCHAR(15),
+    FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
+);
+
+CREATE TABLE justificantes (
+    id_justificante INT PRIMARY KEY,
+    id_alumno INT,
+    fecha_falta DATE,
+    motivo VARCHAR(255),
+    FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
+);
+
+CREATE TABLE reportes_conducta (
+    id_reporte INT PRIMARY KEY,
+    id_alumno INT,
+    fecha DATE,
+    tipo VARCHAR(60),
+    gravedad VARCHAR(15),
+    descripcion TEXT,
+    FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
+);
+
+CREATE TABLE eventos_escolares (
+    id_evento INT PRIMARY KEY,
+    nombre_evento VARCHAR(150),
+    fecha DATE
+);
+
+CREATE TABLE cartas_compromiso (
+    id_carta INT PRIMARY KEY,
+    id_alumno INT,
+    fecha DATE,
+    motivo TEXT,
+    contenido TEXT,
+    FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
+);
+
+CREATE TABLE seguimientos (
+    id_seguimiento INT PRIMARY KEY,
+    id_alumno INT,
+    fecha DATE,
+    descripcion TEXT,
+    acuerdos TEXT,
+    FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
+);
+    '''
 
 modo_actual = "oscuro"
 
