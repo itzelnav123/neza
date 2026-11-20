@@ -3,6 +3,40 @@ from tkinter import ttk, messagebox, filedialog
 from datetime import datetime, date
 import calendar
 
+#MARINA ITZEL JUAREZ NAVA - creo base de datos 
+import mysql.connector
+
+from tkinter import messagebox
+
+def conectar():
+
+    try:
+
+        conexion = mysql.connector.connect(
+
+            host="localhost",
+
+            user="root",
+
+            password="",
+
+            database="sistema_alerta_temprana"
+
+        )
+
+        return conexion
+
+    except mysql.connector.Error as error:
+
+        messagebox.showerror(
+
+            "Error de conexión",
+
+            f"No se pudo conectar a MySQL:\n{error}"
+
+        )
+
+        return None
 
 modo_actual = "oscuro"
 
