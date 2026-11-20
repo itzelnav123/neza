@@ -1087,7 +1087,7 @@ etiqueta_primaria = tk.Label(datos_escuela, text="PRIMARIA", font=("Segoe UI", 9
 etiqueta_escuela = tk.Label(datos_escuela, text="NEZAHUALCÓYOTL", font=("Segoe UI", 12, "bold"), bg=BLANCO, fg=AZUL, anchor="w"); etiqueta_escuela.pack(fill="x", pady=(1, 0))
 separador = tk.Frame(tarjeta, bg="#E5EBF2", height=1); separador.pack(fill="x", padx=32, pady=(0, 14))
 cuerpo = tk.Frame(tarjeta, bg=BLANCO); cuerpo.pack(fill="both", expand=True, padx=32)
-titulo_bienvenida = tk.Label(cuerpo, text="Bienvenido a la Escuela Primaria Nezahualcóyotl", font=("Segoe UI", 20, "bold"), bg=BLANCO, fg=AZUL); titulo_bienvenida.pack(anchor="w", pady=(0, 4))
+titulo_bienvenida = tk.Label(cuerpo, text="Bienvenido al sistema", font=("Segoe UI", 20, "bold"), bg=BLANCO, fg=AZUL); titulo_bienvenida.pack(anchor="w", pady=(0, 4))
 etiqueta_usuario = tk.Label(cuerpo, text="INGRESA TU USUARIO", font=("Segoe UI", 9, "bold"), bg=BLANCO, fg=AZUL); etiqueta_usuario.pack(anchor="w", pady=(12, 5))
 frame_user = tk.Frame(cuerpo, bg=CAMPO, highlightthickness=1, highlightbackground="#DCE5F0"); frame_user.pack(fill="x", ipady=2)
 icono_usuario = tk.Label(frame_user, text="♟", font=("Segoe UI", 16), bg=CAMPO, fg=AZUL_CLARO); icono_usuario.pack(side="left", padx=(12, 8))
