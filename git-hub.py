@@ -39,74 +39,100 @@ def conectar():
 
         return None
 #VALENTINA GUTIERREZ ROMERO · AGREGUE EL SCRIPT DE LA BASE DE DATOS 
-'''CREATE DATABASE sistema_alerta_temprana;
+'''DROP DATABASE IF EXISTS sistema_alerta_temprana;
+
+CREATE DATABASE sistema_alerta_temprana
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
 USE sistema_alerta_temprana;
 
 CREATE TABLE grupos (
-    id_grupo INT PRIMARY KEY,
-    nombre_grupo VARCHAR(10),
-    grado INT,
-    grupo CHAR(1)
-);
+    id_grupo INT AUTO_INCREMENT PRIMARY KEY,
+    grado VARCHAR(20) NOT NULL,
+    grupo VARCHAR(10) NOT NULL,
+    turno VARCHAR(20) NOT NULL,
+    ciclo_escolar VARCHAR(20) NOT NULL
+) ENGINE=InnoDB;
 
 CREATE TABLE alumnos (
-    id_alumno INT PRIMARY KEY,
-    nombre VARCHAR(40),
-    apellido VARCHAR(60),
-    id_grupo INT,
+    id_alumno INT AUTO_INCREMENT PRIMARY KEY,
+    matricula VARCHAR(30) UNIQUE NOT NULL,
+    nombre_completo VARCHAR(150) NOT NULL,
+    id_grupo INT NOT NULL,
+    tutor_nombre VARCHAR(150),
+    tutor_telefono VARCHAR(20),
     FOREIGN KEY (id_grupo) REFERENCES grupos(id_grupo)
-);
+        ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
-CREATE TABLE asistencias (
-    id_asistencia INT PRIMARY KEY,
-    id_alumno INT,
-    fecha DATE,
-    estado VARCHAR(15),
+CREATE TABLE asistencia (
+    id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
+    id_alumno INT NOT NULL,
+    fecha DATE NOT NULL,
+    estado ENUM('Presente', 'Falta', 'Retardo', 'Justificado') NOT NULL,
+    observaciones TEXT,
     FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
-);
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE justificantes (
-    id_justificante INT PRIMARY KEY,
-    id_alumno INT,
-    fecha_falta DATE,
-    motivo VARCHAR(255),
+    id_justificante INT AUTO_INCREMENT PRIMARY KEY,
+    id_alumno INT NOT NULL,
+    fecha_emision DATE NOT NULL,
+    fecha_falta DATE NOT NULL,
+    motivo TEXT NOT NULL,
+    documento_respaldo VARCHAR(255),
+    estado ENUM('Pendiente', 'Aprobado', 'Rechazado') DEFAULT 'Aprobado',
     FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
-);
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE reportes_conducta (
-    id_reporte INT PRIMARY KEY,
-    id_alumno INT,
-    fecha DATE,
-    tipo VARCHAR(60),
-    gravedad VARCHAR(15),
-    descripcion TEXT,
+    id_reporte INT AUTO_INCREMENT PRIMARY KEY,
+    id_alumno INT NOT NULL,
+    docente_reporta VARCHAR(150) NOT NULL,
+    fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tipo_incidencia ENUM('Leve', 'Grave', 'Muy Grave') NOT NULL,
+    descripcion TEXT NOT NULL,
+    estado_alerta ENUM('pendiente', 'vista') DEFAULT 'pendiente',
     FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
-);
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE eventos_escolares (
-    id_evento INT PRIMARY KEY,
-    nombre_evento VARCHAR(150),
-    fecha DATE
-);
-
-CREATE TABLE cartas_compromiso (
-    id_carta INT PRIMARY KEY,
-    id_alumno INT,
-    fecha DATE,
-    motivo TEXT,
-    contenido TEXT,
-    FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
-);
-
-CREATE TABLE seguimientos (
-    id_seguimiento INT PRIMARY KEY,
-    id_alumno INT,
-    fecha DATE,
+    id_evento INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(150) NOT NULL,
     descripcion TEXT,
-    acuerdos TEXT,
+    fecha_inicio DATETIME NOT NULL,
+    fecha_fin DATETIME,
+    lugar VARCHAR(100),
+    dirigido_a ENUM('Todos', 'Docentes', 'Alumnos', 'Padres') DEFAULT 'Todos'
+) ENGINE=InnoDB;
+
+CREATE TABLE carta_compromiso (
+    id_carta INT AUTO_INCREMENT PRIMARY KEY,
+    id_alumno INT NOT NULL,
+    fecha_firma DATE NOT NULL,
+    motivo_acuerdo TEXT NOT NULL,
+    acuerdos_establecidos TEXT NOT NULL,
+    firmado_tutor TINYINT(1) DEFAULT 0,
+    estado ENUM('Vigente', 'Cumplida', 'Incumplida') DEFAULT 'Vigente',
     FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
-);
-    '''
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE seguimiento (
+    id_seguimiento INT AUTO_INCREMENT PRIMARY KEY,
+    id_alumno INT NOT NULL,
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    responsable VARCHAR(100) NOT NULL,
+    acciones_realizadas TEXT NOT NULL,
+    acuerdos_proximos TEXT,
+    estatus_caso ENUM('En proceso', 'Canalizado', 'Cerrado') DEFAULT 'En proceso',
+    FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;'''
 
 modo_actual = "oscuro"
 
