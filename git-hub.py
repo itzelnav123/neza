@@ -888,7 +888,7 @@ def abrir_director():
 
     def mostrar_inicio():
         limpiar_panel()
-        encabezado("Resumen general", "Bienvenido al sistema de administración escolar.")
+        encabezado("Resumen general", "Bienvenido a el panel de Director.")
         fila = tk.Frame(panel, bg=C_DIR("fondo"))
         fila.pack(fill="x", padx=22, pady=(0, 18))
         fila.columnconfigure((0, 1), weight=1, uniform="tarjetas")
