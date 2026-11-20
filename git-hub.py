@@ -247,12 +247,22 @@ def ingresar():
     else:
         mensaje.config(text="Contraseña incorrecta.", fg=TEMAS[modo_actual]["error"])
 
+# LISTAS COMPARTIDAS: DIRECCIÓN ADMINISTRA, DOCENTE CONSULTA
+grupos_compartidos = {f"{n}° A": [f"Alumno {i}" for i in range(1, 15)] for n in range(1, 7)}
+grupos_compartidos["4° A"] = ["Juan Pérez", "María López", "Carlos Gómez"]
+
 #PANEL DEL DOCENTE 
 def abrir_docente():
+    iniciales = {
+        "Juan Pérez": {"asistencias": 12, "faltas": 1, "retardos": 0},
+        "María López": {"asistencias": 13, "faltas": 0, "retardos": 1},
+        "Carlos Gómez": {"asistencias": 10, "faltas": 3, "retardos": 0}
+    }
     alumnos = [
-        {"nombre": "Juan Pérez", "asistencias": 12, "faltas": 1, "retardos": 0},
-        {"nombre": "María López", "asistencias": 13, "faltas": 0, "retardos": 1},
-        {"nombre": "Carlos Gómez", "asistencias": 10, "faltas": 3, "retardos": 0}
+        {"nombre": nombre, "asistencias": iniciales.get(nombre, {}).get("asistencias", 0),
+         "faltas": iniciales.get(nombre, {}).get("faltas", 0),
+         "retardos": iniciales.get(nombre, {}).get("retardos", 0)}
+        for nombre in grupos_compartidos["4° A"]
     ]
     registros = []
     reportes_conducta = []
@@ -435,28 +445,15 @@ def abrir_docente():
             al["retardos"] += 1
         actualizar_tabla_checks()
 
-    def agregar_alumno():
-        nombre = entrada_nombre.get().strip()
-        if not nombre:
-            return
-        if any(a["nombre"].casefold() == nombre.casefold() for a in alumnos):
-            return
-        alumnos.append({"nombre": nombre, "asistencias": 0, "faltas": 0, "retardos": 0})
-        entrada_nombre.delete(0, tk.END)
-        actualizar_tabla_checks()
-
-    def eliminar_alumno():
-        nonlocal sel_nombre
-        if not sel_nombre:
-            messagebox.showwarning("Sin selección", "Toca el nombre del alumno para seleccionarlo y luego Eliminar.")
-            return
-        if messagebox.askyesno("Confirmar", f"¿Eliminar a {sel_nombre}?"):
-            alumnos[:] = [a for a in alumnos if a["nombre"] != sel_nombre]
-            registros[:] = [r for r in registros if r["nombre"] != sel_nombre]
-            sel_nombre = None
-            actualizar_tabla_checks()
+    def sincronizar_alumnos():
+        nombres_actuales = grupos_compartidos["4° A"]
+        existentes = {a["nombre"]: a for a in alumnos}
+        alumnos[:] = [existentes.get(nombre, {"nombre": nombre, "asistencias": 0, "faltas": 0, "retardos": 0})
+                    for nombre in nombres_actuales]
+        registros[:] = [r for r in registros if r["nombre"] in nombres_actuales]
 
     def actualizar_tabla_checks():
+        sincronizar_alumnos()
         if not frame_tabla_checks:
             return
         for w in frame_tabla_checks.winfo_children():
@@ -501,7 +498,7 @@ def abrir_docente():
                      bg=bg_fila, fg=C("secundario"), font=("Segoe UI", 9)).pack(side="left", padx=10)
 
     def mostrar_inicio():
-        nonlocal entrada_nombre, entrada_fecha, frame_tabla_checks
+        nonlocal entrada_fecha, frame_tabla_checks
         limpiar_panel()
         fila_info = tk.Frame(panel_doc, bg=C("fondo"))
         fila_info.pack(fill="x", padx=22, pady=(20, 14))
@@ -530,10 +527,7 @@ def abrir_docente():
         etiqueta(bloque_sec, "No / Nombre / Asistió / Faltó / Retardo", 10, color=C("secundario")).pack(anchor="w", pady=(2, 0))
         marco_datos = tk.Frame(panel_doc, bg=C("fondo"))
         marco_datos.pack(fill="x", padx=22, pady=5)
-        etiqueta(marco_datos, "Nombre:", 10, True).pack(side="left", padx=(0, 5))
-        entrada_nombre = ttk.Entry(marco_datos, font=("Segoe UI", 10), width=25)
-        entrada_nombre.pack(side="left", padx=5)
-        boton_padre(marco_datos, "Agregar alumno", agregar_alumno).pack(side="left", padx=8)
+        etiqueta(marco_datos, "Grupo: 4° A | Lista administrada por Dirección", 10, True).pack(side="left", padx=(0, 5))
         marco_f = tk.Frame(panel_doc, bg=C("fondo"))
         marco_f.pack(fill="x", padx=22, pady=8)
         etiqueta(marco_f, "Fecha:", 10).pack(side="left", padx=(0, 5))
@@ -547,9 +541,6 @@ def abrir_docente():
             tk.Label(header_tabla, text=texto, bg=C("tabla_cabecera"), fg=C("texto"), font=("Segoe UI", 10, "bold"), width=ancho, anchor="w" if texto in ("No", "Nombre") else "center").pack(side="left", padx=padx)
         frame_tabla_checks = tk.Frame(panel_doc, bg=C("tarjeta"), highlightbackground=C("borde"), highlightthickness=1)
         frame_tabla_checks.pack(fill="both", expand=True, padx=22, pady=2)
-        marco_b = tk.Frame(panel_doc, bg=C("fondo"))
-        marco_b.pack(padx=22, pady=12, anchor="w")
-        boton_padre(marco_b, "Eliminar alumno seleccionado", eliminar_alumno, C("rojo"), "#FFFFFF").pack(side="left")
         actualizar_tabla_checks()
 
     def mostrar_justificantes():
@@ -774,10 +765,11 @@ def abrir_director():
     def C_DIR(clave):
         return TEMAS_DIR[tema_actual][clave]
 
-    grupos = {f"{n}° A": [f"Alumno {i}" for i in range(1, 15)] for n in range(1, 7)}
+    grupos = grupos_compartidos
     alumnos = [alumno for lista in grupos.values() for alumno in lista]
     registros = {(grupo, alumno): "Presente" for grupo, lista in grupos.items() for alumno in lista}
     eventos = []
+    historial_asistencia = []
 
     estilo = ttk.Style()
     estilo.theme_use("clam")
@@ -928,11 +920,130 @@ def abrir_director():
         construir_menu()
         mostrar_vista(vista_actual)
 
+    def obtener_alertas():
+        alertas = []
+        por_alumno = {}
+        for registro in historial_asistencia:
+            clave = (registro["grupo"], registro["alumno"])
+            por_alumno.setdefault(clave, []).append(registro)
+        for (grupo, alumno), historial in por_alumno.items():
+            historial.sort(key=lambda r: r["fecha"])
+            consecutivas = 0
+            for r in reversed(historial):
+                if r["estado"] in ("Ausente", "Retardo"):
+                    consecutivas += 1
+                else:
+                    break
+            hoy = date.today()
+            semana_actual = hoy.isocalendar()[:2]
+            semana = sum(1 for r in historial
+                        if r["estado"] in ("Ausente", "Retardo")
+                        and date.fromisoformat(r["fecha"]).isocalendar()[:2] == semana_actual)
+            if consecutivas >= 3 or semana >= 3:
+                nivel = "PRIORITARIA" if consecutivas > 3 or semana >= 4 else "SEGUIMIENTO"
+                alertas.append({"grupo": grupo, "alumno": alumno,
+                               "consecutivas": consecutivas, "semana": semana,
+                               "nivel": nivel})
+        return alertas
+
+    def mostrar_alertas():
+        limpiar_panel()
+        encabezado("Alertas de asistencia", "Alumnos con 3 o más faltas/retardos consecutivos o 3 incidencias en la semana.")
+        alertas = obtener_alertas()
+        fila = tk.Frame(panel, bg=C_DIR("fondo")); fila.pack(fill="x", padx=22, pady=(0, 14))
+        fila.columnconfigure((0, 1), weight=1, uniform="alertas")
+        caja_tarjeta(fila, "ALERTAS ACTIVAS", str(len(alertas)), "Alumnos que requieren seguimiento", C_DIR("rojo")).grid(row=0, column=0, sticky="nsew", padx=5, pady=4)
+        prioritarias = sum(1 for a in alertas if a["nivel"] == "PRIORITARIA")
+        caja_tarjeta(fila, "PRIORITARIAS", str(prioritarias), "Casos con mayor frecuencia", C_DIR("amarillo")).grid(row=0, column=1, sticky="nsew", padx=5, pady=4)
+        etiqueta(panel, "ALUMNOS QUE REQUIEREN SEGUIMIENTO", 11, True).pack(anchor="w", padx=22, pady=(2, 8))
+        tabla_alertas = crear_tabla(panel, ("Nivel", "Alumno", "Grupo", "Seguidas", "Esta semana"), (130, 220, 100, 100, 120))
+        for a in alertas:
+            tabla_alertas.insert("", "end", values=(a["nivel"], a["alumno"], a["grupo"], a["consecutivas"], a["semana"]))
+        if not alertas:
+            etiqueta(panel, "✓ No hay alertas activas.", 11, True, color=C_DIR("verde")).pack(anchor="w", padx=22, pady=(0, 12))
+        etiqueta(panel, "HISTORIAL DE FALTAS Y RETARDOS", 11, True).pack(anchor="w", padx=22, pady=(6, 8))
+        tabla_historial = crear_tabla(panel, ("Fecha", "Alumno", "Grupo", "Incidencia"), (130, 220, 100, 130))
+        incidencias = [r for r in historial_asistencia if r["estado"] in ("Ausente", "Retardo")]
+        for r in sorted(incidencias, key=lambda x: x["fecha"], reverse=True):
+            tabla_historial.insert("", "end", values=(r["fecha"], r["alumno"], r["grupo"], r["estado"]))
+        if not incidencias:
+            etiqueta(panel, "Todavía no hay faltas ni retardos registrados.", 10, color=C_DIR("secundario")).pack(anchor="w", padx=22, pady=(0, 12))
+
+    def mostrar_alumnos():
+        limpiar_panel()
+        encabezado("Administración de alumnos", "Dirección puede agregar alumnos individualmente o en grupo. La lista se comparte con Docente.")
+        form = tk.Frame(panel, bg=C_DIR("tarjeta"), highlightbackground=C_DIR("borde"), highlightthickness=1)
+        form.pack(fill="x", padx=22, pady=(0, 14))
+        etiqueta(form, "Selecciona el grupo", 10, True, bg=C_DIR("tarjeta")).pack(anchor="w", padx=14, pady=(12, 5))
+        grupo_var_admin = tk.StringVar(value=list(grupos.keys())[0])
+        selector = ttk.Combobox(form, textvariable=grupo_var_admin, values=list(grupos.keys()), state="readonly", width=14)
+        selector.pack(anchor="w", padx=14, pady=(0, 10))
+        etiqueta(form, "Agregar uno por uno", 10, True, bg=C_DIR("tarjeta")).pack(anchor="w", padx=14, pady=(2, 5))
+        fila_ind = tk.Frame(form, bg=C_DIR("tarjeta")); fila_ind.pack(fill="x", padx=14, pady=(0, 10))
+        ent_nombre = ttk.Entry(fila_ind, font=("Segoe UI", 10)); ent_nombre.pack(side="left", fill="x", expand=True, padx=(0, 8))
+        def agregar_individual():
+            nombre = ent_nombre.get().strip()
+            grupo = grupo_var_admin.get()
+            if not nombre:
+                messagebox.showwarning("Nombre vacío", "Escribe el nombre del alumno."); return
+            if any(n.casefold() == nombre.casefold() for n in grupos[grupo]):
+                messagebox.showwarning("Duplicado", "Ese alumno ya está registrado en el grupo."); return
+            grupos[grupo].append(nombre)
+            registros[(grupo, nombre)] = "Presente"
+            ent_nombre.delete(0, tk.END)
+            actualizar_lista()
+            messagebox.showinfo("Alumno agregado", f"{nombre} se agregó a {grupo}.")
+        boton_padre(fila_ind, "Agregar alumno", agregar_individual).pack(side="right")
+        etiqueta(form, "Agregar masivamente (un nombre por línea)", 10, True, bg=C_DIR("tarjeta")).pack(anchor="w", padx=14, pady=(2, 5))
+        texto_masivo = tk.Text(form, height=5, font=("Segoe UI", 10), bg=C_DIR("campo"), fg=C_DIR("texto_campo"), insertbackground=C_DIR("texto_campo"), relief="flat", padx=8, pady=8)
+        texto_masivo.pack(fill="x", padx=14, pady=(0, 8))
+        def agregar_masivo():
+            grupo = grupo_var_admin.get()
+            nombres = [linea.strip() for linea in texto_masivo.get("1.0", "end").splitlines() if linea.strip()]
+            agregados, duplicados = 0, 0
+            for nombre in nombres:
+                if any(n.casefold() == nombre.casefold() for n in grupos[grupo]):
+                    duplicados += 1
+                    continue
+                grupos[grupo].append(nombre)
+                registros[(grupo, nombre)] = "Presente"
+                agregados += 1
+            texto_masivo.delete("1.0", "end")
+            actualizar_lista()
+            messagebox.showinfo("Carga terminada", f"Agregados: {agregados}\nDuplicados omitidos: {duplicados}")
+        boton_padre(form, "Agregar lista", agregar_masivo, C_DIR("verde"), "#FFFFFF").pack(anchor="w", padx=14, pady=(0, 14))
+        marco_lista = tk.Frame(panel, bg=C_DIR("fondo")); marco_lista.pack(fill="both", expand=True, padx=22, pady=(0, 14))
+        etiqueta(marco_lista, "Alumnos del grupo", 12, True).pack(anchor="w", pady=(0, 8))
+        tabla_admin = crear_tabla(marco_lista, ("No.", "Nombre", "Grupo"), (60, 300, 100))
+        def actualizar_lista(_event=None):
+            alumnos[:] = [nombre for lista in grupos.values() for nombre in lista]
+            for item in tabla_admin.get_children(): tabla_admin.delete(item)
+            grupo = grupo_var_admin.get()
+            for i, nombre in enumerate(grupos[grupo], 1):
+                tabla_admin.insert("", "end", values=(i, nombre, grupo))
+            selector.configure(values=list(grupos.keys()))
+        def eliminar_admin():
+            seleccionado = tabla_admin.selection()
+            if not seleccionado:
+                messagebox.showwarning("Selecciona", "Selecciona un alumno para eliminar."); return
+            nombre = tabla_admin.item(seleccionado[0], "values")[1]
+            grupo = grupo_var_admin.get()
+            if not messagebox.askyesno("Confirmar", f"¿Eliminar a {nombre} de {grupo}?"):
+                return
+            grupos[grupo][:] = [n for n in grupos[grupo] if n != nombre]
+            registros.pop((grupo, nombre), None)
+            historial_asistencia[:] = [r for r in historial_asistencia if not (r["grupo"] == grupo and r["alumno"] == nombre)]
+            alumnos[:] = [a for a in alumnos if a != nombre]
+            actualizar_lista()
+        selector.bind("<<ComboboxSelected>>", actualizar_lista)
+        boton_padre(marco_lista, "Eliminar seleccionado", eliminar_admin, C_DIR("rojo"), "#FFFFFF").pack(anchor="e", pady=(8, 0))
+        actualizar_lista()
+
     def construir_menu():
         for w in menu_frame.winfo_children():
             w.destroy()
-        opciones = [("⌂   Inicio", "inicio"), ("▤   Asistencia", "asistencia"),
-                    ("▦   Calendario", "calendario"), ("✎   Carta compromiso", "carta")]
+        opciones = [("⌂   Inicio", "inicio"), ("♙   Alumnos", "alumnos"), ("▤   Asistencia", "asistencia"),
+                    ("🚨   Alertas", "alertas"), ("▦   Calendario", "calendario"), ("✎   Carta compromiso", "carta")]
         compacto = ventana_dir.winfo_width() < 760
         for texto, clave in opciones:
             texto_boton = texto if not compacto else texto.split("   ")[-1]
@@ -953,7 +1064,7 @@ def abrir_director():
         nonlocal vista_actual
         vista_actual = clave
         construir_menu()
-        {"inicio": mostrar_inicio, "asistencia": mostrar_asistencia,
+        {"inicio": mostrar_inicio, "asistencia": mostrar_asistencia, "alertas": mostrar_alertas,
          "calendario": mostrar_calendario, "carta": mostrar_carta}[clave]()
 
     def mostrar_inicio():
@@ -966,6 +1077,16 @@ def abrir_director():
                  ("Asistencia", "Consultar", "Revisar estado del grupo", C_DIR("verde"))]
         for i, (t, v, d, color) in enumerate(datos):
             caja_tarjeta(fila, t, v, d, color).grid(row=0, column=i, sticky="nsew", padx=5, pady=4)
+        alertas_inicio = obtener_alertas()
+        if alertas_inicio:
+            aviso = tk.Frame(panel, bg=C_DIR("tarjeta"), highlightbackground=C_DIR("rojo"), highlightthickness=2)
+            aviso.pack(fill="x", padx=22, pady=(0, 14))
+            etiqueta(aviso, f"🚨 ALERTA: {len(alertas_inicio)} alumno(s) requieren seguimiento", 12, True, color=C_DIR("rojo"), bg=C_DIR("tarjeta")).pack(anchor="w", padx=14, pady=(12, 5))
+            boton_padre(aviso, "Ver alertas", lambda: mostrar_vista("alertas"), C_DIR("rojo"), "#FFFFFF").pack(anchor="w", padx=14, pady=(0, 12))
+        else:
+            aviso = tk.Frame(panel, bg=C_DIR("tarjeta"), highlightbackground=C_DIR("borde"), highlightthickness=1)
+            aviso.pack(fill="x", padx=22, pady=(0, 14))
+            etiqueta(aviso, "✓ Sin alertas de asistencia", 11, True, color=C_DIR("verde"), bg=C_DIR("tarjeta")).pack(anchor="w", padx=14, pady=12)
         etiqueta(panel, "ACCESOS RÁPIDOS", 11, True).pack(anchor="w", padx=22, pady=(3, 10))
         accesos = tk.Frame(panel, bg=C_DIR("fondo")); accesos.pack(fill="x", padx=22)
         for texto, clave, color in [("Listas de asistencia", "asistencia", C_DIR("acento")),
@@ -1027,6 +1148,12 @@ def abrir_director():
             estado_actual = registros[(grupo, alumno)]
             nuevo_estado = estados[(estados.index(estado_actual) + 1) % len(estados)]
             registros[(grupo, alumno)] = nuevo_estado
+            fecha_registro = date.today().isoformat()
+            previo = next((r for r in historial_asistencia if r["grupo"] == grupo and r["alumno"] == alumno and r["fecha"] == fecha_registro), None)
+            if previo:
+                previo["estado"] = nuevo_estado
+            else:
+                historial_asistencia.append({"fecha": fecha_registro, "alumno": alumno, "grupo": grupo, "estado": nuevo_estado})
             tabla.item(iid, values=(valores[0], alumno, grupo, nuevo_estado), tags=(nuevo_estado,))
             cargar_grupo()
         selector_grupo.bind("<<ComboboxSelected>>", cargar_grupo)
