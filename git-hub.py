@@ -45,7 +45,7 @@ USE sistema_alerta_temprana;
 CREATE TABLE grupos (
     id_grupo INT PRIMARY KEY,
     nombre_grupo VARCHAR(10),
-    grado INT, 
+    grado INT,
     grupo CHAR(1)
 );
 
@@ -247,7 +247,7 @@ def ingresar():
     else:
         mensaje.config(text="Contraseña incorrecta.", fg=TEMAS[modo_actual]["error"])
 
-#Panel del docente
+#PANEL DEL DOCENTE 
 def abrir_docente():
     alumnos = [
         {"nombre": "Juan Pérez", "asistencias": 12, "faltas": 1, "retardos": 0},
@@ -280,6 +280,7 @@ def abrir_docente():
 
     estilo = ttk.Style()
     estilo.theme_use("clam")
+
     def configurar_estilos():
         estilo.configure("Treeview", background=C("panel"), foreground=C("texto"),
                          fieldbackground=C("panel"), rowheight=34,
@@ -602,7 +603,7 @@ def abrir_docente():
         limpiar_panel()
         bloque_sec = tk.Frame(panel_doc, bg=C("fondo"))
         bloque_sec.pack(fill="x", padx=22, pady=(20, 16))
-        etiqueta(bloque_sec, "REPORTE DE CONDUCTA", 20, True).pack(anchor="w")
+        etiqueta(bloque_sec, "INCIDENCIAS", 20, True).pack(anchor="w")
         form = tk.Frame(panel_doc, bg=C("tarjeta"), padx=18, pady=16, highlightbackground=C("borde"), highlightthickness=1)
         form.pack(fill="x", padx=22)
         fila1 = tk.Frame(form, bg=C("tarjeta")); fila1.pack(fill="x", pady=5)
@@ -649,9 +650,9 @@ def abrir_docente():
             reportes_conducta.append({"fecha": fecha, "nombre": alumno, "tipo": tipo_var.get(), "gravedad": gravedad_var.get(), "descripcion": desc})
             actualizar_reportes()
             texto_desc.delete("1.0", "end")
-            messagebox.showinfo("Guardado", "Reporte de conducta registrado exitosamente.")
+            messagebox.showinfo("Guardado", "Incidencia de conducta registrada exitosamente.")
 
-        boton_padre(form, "GUARDAR REPORTE", guardar_reporte).pack(anchor="w", pady=10)
+        boton_padre(form, "GUARDAR INCIDENCIA ", guardar_reporte).pack(anchor="w", pady=10)
         actualizar_reportes()
 
     botones_menu_doc = []
@@ -678,7 +679,7 @@ def abrir_docente():
         botones_menu_doc.clear()
         for w in menu_frame_doc.winfo_children():
             w.destroy()
-        opciones_doc = [("⌂   Inicio", "Inicio"), ("▤   Justificantes", "Justificantes"), ("✎   Reportes", "Reportes")]
+        opciones_doc = [("⌂   Inicio", "Inicio"), ("▤   Justificantes", "Justificantes"), ("✎   Incidencias", "Incidencias")]
         compacto = ventana_docente.winfo_width() < 760
         for texto, clave in opciones_doc:
             texto_boton = texto if not compacto else texto.split("   ")[-1]
@@ -988,7 +989,7 @@ def abrir_director():
         tabla = crear_tabla(panel, ("No.", "Alumno", "Grupo", "Estado"), (55, 220, 100, 130))
     def mostrar_asistencia():
         limpiar_panel()
-        encabezado("Listas de asistencia", "Selecciona un grupo, elige un alumno y cambia su estado. Los Ausentes se marcan en ROJO.")
+        encabezado("Listas de asistencia", "Selecciona un grupo, elige un alumno y cambia su estado. Los alumnos ausentes se marcan en color ROJO.")
         controles = tk.Frame(panel, bg=C_DIR("fondo")); controles.pack(fill="x", padx=22, pady=(0, 12))
         etiqueta(controles, "Grupo:", 10, True).pack(side="left", padx=(0, 8))
         grupo_var = tk.StringVar(value="1° A")
@@ -996,12 +997,12 @@ def abrir_director():
         selector_grupo.pack(side="left")
         tabla = crear_tabla(panel, ("No.", "Alumno", "Grupo", "Estado"), (55, 220, 100, 130))
 
-        # AQUI ESTA LO ROJO - Colores para cada estado
+   
         tabla.tag_configure("Ausente", background="#FF7185", foreground="white")
-        tabla.tag_configure("Presente", background="#19B887", foreground="white")
+        tabla.tag_configure("Presente", background="#69B116", foreground="black")
         tabla.tag_configure("Retardo", background="#F6C76B", foreground="black")
 
-        # Contador de faltas arriba
+   
         etiqueta_faltas = etiqueta(panel, "", 11, True, color=C_DIR("rojo"))
         etiqueta_faltas.pack(anchor="w", padx=22, pady=(0, 8))
 
@@ -1074,7 +1075,7 @@ def abrir_director():
 
     def mostrar_carta():
         limpiar_panel()
-        encabezado("Carta compromiso", "Genera y guarda una carta para el alumno y su tutor.")
+        encabezado("Carta compromiso", "Genera y guarda una carta compromiso para el alumno y su tutor.")
         form = tk.Frame(panel, bg=C_DIR("tarjeta"), highlightbackground=C_DIR("borde"), highlightthickness=1)
         form.pack(fill="x", padx=22, pady=(0, 18))
         etiqueta(form, "Datos de la carta", 12, True, bg=C_DIR("tarjeta")).pack(anchor="w", padx=16, pady=(14, 8))
@@ -1093,18 +1094,18 @@ def abrir_director():
                 messagebox.showwarning("Datos incompletos", "Completa el nombre y el motivo."); return
             carta = ("CARTA COMPROMISO ESCOLAR\n"
                      "ESCUELA PRIMARIA NEZAHUALCÓYOTL\n"
-                     "====================================\n\n"
+                     "*******************************\n\n"
                      f"Fecha: {datetime.now().strftime('%d/%m/%Y')}\n\n"
-                     f"Yo, {alumno}, me comprometo a mejorar en el siguiente aspecto: {motivo}.\n\n"
+                     f"Yo, {alumno}, me comprometo a :{motivo}.\n\n"
                      "Me comprometo a respetar el reglamento escolar y cumplir con mis responsabilidades.\n\n"
-                     "Firma del alumno: ______________________\n\n"
+                     "Nombre del alumno: ______________________\n\n"
                      "Firma del tutor: ________________________\n\n"
                      "Firma de dirección: _____________________")
             vista.delete("1.0", tk.END); vista.insert("1.0", carta)
         def guardar_txt():
             texto_carta = vista.get("1.0", "end-1c").strip()
             if not texto_carta:
-                messagebox.showwarning("Sin contenido", "Primero genera la carta."); return
+                messagebox.showwarning("Sin contenido", "Primero genera la carta compromiso."); return
             ruta = filedialog.asksaveasfilename(title="Guardar carta compromiso", defaultextension=".txt", filetypes=[("Archivo de texto", "*.txt")])
             if ruta:
                 try:
@@ -1132,7 +1133,7 @@ tk.Label(encabezado, text="NEZAHUALCÓYOTL", font=("Segoe UI", 20, "bold"), bg=A
 tk.Label(encabezado, text="Sistema de Alerta Temprana para Situaciones de Riesgo", font=("Segoe UI", 10), bg=AZUL, fg="#B9CBE2").pack()
 tk.Label(encabezado, text="ESCUELA PRIMARIA NEZAHUALCÓYOTL", font=("Segoe UI", 8, "bold"), bg=AZUL, fg=CIAN).pack(pady=(3, 0))
 
-boton_tema = tk.Button(ventana, text="☀  Modo claro", font=("Segoe UI", 9, "bold"),
+boton_tema = tk.Button(ventana, text=" ☀ Modo claro", font=("Segoe UI", 9, "bold"),
                        bg=AZUL_CLARO, fg=BLANCO, activebackground=CIAN,
                        activeforeground=FONDO, relief="flat", bd=0, cursor="hand2",
                        command=alternar_tema, padx=12, pady=7)
@@ -1151,7 +1152,7 @@ emblema.create_rectangle(23, 33, 31, 45, fill=CIAN, outline=CIAN)
 for px in (16, 34):
     emblema.create_rectangle(px, 25, px + 5, 30, fill=CIAN, outline=CIAN)
 datos_escuela = tk.Frame(cabecera, bg=BLANCO); datos_escuela.pack(side="left", fill="x", expand=True)
-etiqueta_primaria = tk.Label(datos_escuela, text="PRIMARIA", font=("Segoe UI", 9, "bold"), bg=BLANCO, fg=GRIS, anchor="w"); etiqueta_primaria.pack(fill="x")
+etiqueta_primaria = tk.Label(datos_escuela, text=" ESCUELA PRIMARIA", font=("Segoe UI", 9, "bold"), bg=BLANCO, fg=GRIS, anchor="w"); etiqueta_primaria.pack(fill="x")
 etiqueta_escuela = tk.Label(datos_escuela, text="NEZAHUALCÓYOTL", font=("Segoe UI", 12, "bold"), bg=BLANCO, fg=AZUL, anchor="w"); etiqueta_escuela.pack(fill="x", pady=(1, 0))
 separador = tk.Frame(tarjeta, bg="#E5EBF2", height=1); separador.pack(fill="x", padx=32, pady=(0, 14))
 cuerpo = tk.Frame(tarjeta, bg=BLANCO); cuerpo.pack(fill="both", expand=True, padx=32)
