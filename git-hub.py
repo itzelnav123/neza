@@ -623,7 +623,7 @@ def abrir_docente():
                             anchor="w" if not compacto else "center",
                             padx=16 if not compacto else 4, pady=12,
                             relief="flat", bd=0, cursor="hand2")
-            btn.pack(fill="x" if not compacto else "left", expand=bool(compacto),
+            btn.pack(fill="x" if not compacto else "x", expand=bool(compacto),
                      padx=7 if not compacto else 1, pady=2)
             botones_menu_doc.append(btn)
 
@@ -876,7 +876,7 @@ def abrir_director():
                       anchor="w" if not compacto else "center",
                       padx=16 if not compacto else 4, pady=12,
                       relief="flat", bd=0, cursor="hand2").pack(
-                          fill="x" if not compacto else "left",
+                          fill="x" if not compacto else "x",
                           expand=bool(compacto), padx=7 if not compacto else 1, pady=2)
 
     def mostrar_vista(clave):
@@ -917,11 +917,35 @@ def abrir_director():
         selector_grupo = ttk.Combobox(controles, textvariable=grupo_var, values=list(grupos.keys()), state="readonly", width=12, font=("Segoe UI", 10))
         selector_grupo.pack(side="left")
         tabla = crear_tabla(panel, ("No.", "Alumno", "Grupo", "Estado"), (55, 220, 100, 130))
+    def mostrar_asistencia():
+        limpiar_panel()
+        encabezado("Listas de asistencia", "Selecciona un grupo, elige un alumno y cambia su estado. Los Ausentes se marcan en ROJO.")
+        controles = tk.Frame(panel, bg=C_DIR("fondo")); controles.pack(fill="x", padx=22, pady=(0, 12))
+        etiqueta(controles, "Grupo:", 10, True).pack(side="left", padx=(0, 8))
+        grupo_var = tk.StringVar(value="1° A")
+        selector_grupo = ttk.Combobox(controles, textvariable=grupo_var, values=list(grupos.keys()), state="readonly", width=12, font=("Segoe UI", 10))
+        selector_grupo.pack(side="left")
+        tabla = crear_tabla(panel, ("No.", "Alumno", "Grupo", "Estado"), (55, 220, 100, 130))
+
+        # AQUI ESTA LO ROJO - Colores para cada estado
+        tabla.tag_configure("Ausente", background="#FF7185", foreground="white")
+        tabla.tag_configure("Presente", background="#19B887", foreground="white")
+        tabla.tag_configure("Retardo", background="#F6C76B", foreground="black")
+
+        # Contador de faltas arriba
+        etiqueta_faltas = etiqueta(panel, "", 11, True, color=C_DIR("rojo"))
+        etiqueta_faltas.pack(anchor="w", padx=22, pady=(0, 8))
+
         def cargar_grupo(_event=None):
             for item in tabla.get_children(): tabla.delete(item)
             grupo = grupo_var.get()
+            total_faltas = 0
             for i, alumno in enumerate(grupos[grupo], 1):
-                tabla.insert("", "end", iid=str(i), values=(i, alumno, grupo, registros[(grupo, alumno)]))
+                estado = registros[(grupo, alumno)]
+                if estado == "Ausente":
+                    total_faltas += 1
+                tabla.insert("", "end", iid=str(i), values=(i, alumno, grupo, estado), tags=(estado,))
+            etiqueta_faltas.config(text=f" Faltas en {grupo}: {total_faltas} alumno(s) en ROJO")
         def cambiar_estado():
             seleccion = tabla.selection()
             if not seleccion:
@@ -931,12 +955,13 @@ def abrir_director():
             alumno, grupo = valores[1], valores[2]
             estados = ["Presente", "Ausente", "Retardo"]
             estado_actual = registros[(grupo, alumno)]
-            registros[(grupo, alumno)] = estados[(estados.index(estado_actual) + 1) % len(estados)]
-            tabla.item(iid, values=(valores[0], alumno, grupo, registros[(grupo, alumno)]))
+            nuevo_estado = estados[(estados.index(estado_actual) + 1) % len(estados)]
+            registros[(grupo, alumno)] = nuevo_estado
+            tabla.item(iid, values=(valores[0], alumno, grupo, nuevo_estado), tags=(nuevo_estado,))
+            cargar_grupo()
         selector_grupo.bind("<<ComboboxSelected>>", cargar_grupo)
         cargar_grupo()
         boton_padre(panel, "Cambiar estado del seleccionado", cambiar_estado).pack(anchor="e", padx=22, pady=(0, 18))
-
     def mostrar_calendario():
         limpiar_panel()
         encabezado("Calendario escolar", "Consulta el mes actual y registra eventos escolares.")
