@@ -874,8 +874,6 @@ def abrir_docente():
             mostrar_inicio()
         elif nombre == "Justificantes":
             mostrar_justificantes()
-        elif nombre == "Alertas":
-            mostrar_alertas_docente()
         else:
             mostrar_etica()
 
@@ -883,7 +881,7 @@ def abrir_docente():
         botones_menu_doc.clear()
         for w in menu_frame_doc.winfo_children():
             w.destroy()
-        opciones_doc = [("⌂   Inicio", "Inicio"), ("▤   Justificantes", "Justificantes"), ("⚠   Alertas", "Alertas"), ("✎   Reportes", "Reportes")]
+        opciones_doc = [("⌂   Inicio", "Inicio"), ("▤   Justificantes", "Justificantes"), ("✎   Reportes", "Reportes")]
         compacto = False 
         for texto, clave in opciones_doc:
             texto_boton = texto if not compacto else texto.split("   ")[-1]
@@ -1141,7 +1139,7 @@ def abrir_director():
         for w in menu_frame.winfo_children():
             w.destroy()
         opciones = [("⌂   Inicio", "inicio"), ("▤   Asistencia", "asistencia"),
-                    ("▣   Registro masivo", "registro_masivo"),
+                    ("▣   Registro de alumnos", "registro_masivo"),
                     ("⚠   Alertas", "alertas"), ("▦   Calendario", "calendario"),
                     ("✎   Carta compromiso", "carta")]
         compacto = ventana_dir.winfo_width() < 760
@@ -1149,16 +1147,19 @@ def abrir_director():
             texto_boton = texto if not compacto else texto.split("   ")[-1]
             seleccionado = vista_actual == clave
             tk.Button(menu_frame, text=texto_boton,
-                      command=lambda k=clave: mostrar_vista(k),
-                      bg=C_DIR("seleccion_barra") if seleccionado else C_DIR("barra"),
-                      fg=C_DIR("texto_barra"), activebackground=C_DIR("hover_barra"),
-                      activeforeground=C_DIR("texto_barra"),
-                      font=("Segoe UI", 10, "bold" if seleccionado else "normal"),
-                      anchor="w" if not compacto else "center",
-                      padx=16 if not compacto else 4, pady=12,
-                      relief="flat", bd=0, cursor="hand2").pack(
-                          fill="x" if not compacto else "left",
-                          expand=bool(compacto), padx=7 if not compacto else 1, pady=2)
+    command=lambda k=clave: mostrar_vista(k),
+    bg=C_DIR("seleccion_barra") if seleccionado else C_DIR("barra"),
+    fg=C_DIR("texto_barra"), activebackground=C_DIR("hover_barra"),
+    activeforeground=C_DIR("texto_barra"),
+    font=("Segoe UI", 10, "bold" if seleccionado else "normal"),
+    anchor="w",
+    justify="left",
+    padx=28, pady=18,
+    relief="flat", bd=0, cursor="hand2").pack(
+        side="top",
+        fill="x",
+        expand=False, padx=0, pady=4)
+
 
     def mostrar_vista(clave):
         nonlocal vista_actual
@@ -1263,7 +1264,7 @@ def abrir_director():
     def mostrar_registro_masivo():
         limpiar_panel()
         encabezado(
-            "Registro masivo de alumnos",
+            "Registro de alumnos",
             "Registra alumnos por grado. Escribe un nombre por renglón y selecciona el grupo correspondiente."
         )
 
