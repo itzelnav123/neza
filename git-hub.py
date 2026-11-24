@@ -547,7 +547,6 @@ def abrir_docente():
         bloque_sec = tk.Frame(panel_doc, bg=C("fondo"))
         bloque_sec.pack(fill="x", padx=22, pady=(10, 8))
         etiqueta(bloque_sec, "CONTROL DE ASISTENCIAS", 20, True).pack(anchor="w")
-        etiqueta(bloque_sec, "No / Nombre / Asistió / Faltó / Retardo", 10, color=C("secundario")).pack(anchor="w", pady=(2, 0))
         marco_datos = tk.Frame(panel_doc, bg=C("fondo"))
         marco_datos.pack(fill="x", padx=22, pady=5)
         etiqueta(marco_datos, "Nombre:", 10, True).pack(side="left", padx=(0, 5))
@@ -885,7 +884,7 @@ def abrir_docente():
         for w in menu_frame_doc.winfo_children():
             w.destroy()
         opciones_doc = [("⌂   Inicio", "Inicio"), ("▤   Justificantes", "Justificantes"), ("⚠   Alertas", "Alertas"), ("✎   Reportes", "Reportes")]
-        compacto = ventana_docente.winfo_width() < 760
+        compacto = False 
         for texto, clave in opciones_doc:
             texto_boton = texto if not compacto else texto.split("   ")[-1]
             seleccionado = vista_docente_actual == clave
@@ -898,7 +897,7 @@ def abrir_docente():
                             anchor="w" if not compacto else "center",
                             padx=16 if not compacto else 4, pady=12,
                             relief="flat", bd=0, cursor="hand2")
-            btn.pack(fill="x" if not compacto else "left", expand=bool(compacto),
+            btn.pack(fill="x" if not compacto else "y", expand=bool(compacto),
                      padx=7 if not compacto else 1, pady=2)
             botones_menu_doc.append(btn)
 
