@@ -264,7 +264,7 @@ def abrir_docente():
     header_doc = tk.Frame(zona_derecha_doc, bg=C("encabezado"), height=90)
     header_doc.pack(fill="x")
     header_doc.pack_propagate(False)
-    titulo_header_doc = tk.Label(header_doc, text="¡Bienvenido, Docente! | Primaria Nezahualcóyotl",
+    titulo_header_doc = tk.Label(header_doc, text="¡Bienvenido Docente! | Primaria Nezahualcóyotl",
                                  font=("Segoe UI", 20, "bold"),
                                  bg=C("encabezado"), fg=C("texto"))
     titulo_header_doc.pack(side="left", padx=22)
