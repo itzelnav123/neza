@@ -492,8 +492,6 @@ def abrir_docente():
         boton_padre(marco_b, "Eliminar alumno seleccionado", eliminar_alumno, C("rojo"), "#FFFFFF").pack(side="left")
         actualizar_tabla_checks()
 
-<<<<<<< HEAD
-=======
     def mostrar_alertas_docente():
         limpiar_panel()
         bloque = tk.Frame(panel_doc, bg=C("fondo"))
@@ -841,7 +839,6 @@ def abrir_docente():
         cambiar_consulta()
 
 
->>>>>>> de3cc352e3b4a5f625e1f1f295462af7d62a5834
     def mostrar_justificantes():
         limpiar_panel()
         bloque_sec = tk.Frame(panel_doc, bg=C("fondo"))
@@ -976,18 +973,8 @@ def abrir_docente():
         botones_menu_doc.clear()
         for w in menu_frame_doc.winfo_children():
             w.destroy()
-<<<<<<< HEAD
         opciones_doc = [("⌂   Inicio", "Inicio"), ("▤   Justificantes", "Justificantes"), ("✎   Reportes", "Reportes")]
         compacto = ventana_docente.winfo_width() < 760
-=======
-        opciones_doc = [
-            ("⌂   Inicio", "Inicio"),
-            ("▤   Justificantes", "Justificantes"),
-            ("✎   Reportes", "Reportes"),
-            ("▥   Gráficas", "Graficas")
-        ]
-        compacto = False 
->>>>>>> de3cc352e3b4a5f625e1f1f295462af7d62a5834
         for texto, clave in opciones_doc:
             texto_boton = texto if not compacto else texto.split("   ")[-1]
             seleccionado = vista_docente_actual == clave
@@ -1464,7 +1451,7 @@ etiqueta_escuela = tk.Label(datos_escuela, text="NEZAHUALCÓYOTL", font=("Segoe 
 separador = tk.Frame(tarjeta, bg="#E5EBF2", height=1); separador.pack(fill="x", padx=32, pady=(0, 14))
 cuerpo = tk.Frame(tarjeta, bg=BLANCO); cuerpo.pack(fill="both", expand=True, padx=32)
 titulo_bienvenida = tk.Label(cuerpo, text="Bienvenido al sistema", font=("Segoe UI", 20, "bold"), bg=BLANCO, fg=AZUL); titulo_bienvenida.pack(anchor="w", pady=(0, 4))
-etiqueta_usuario = tk.Label(cuerpo, text="INGRESA TU USUARIO", font=("Segoe UI", 9, "bold"), bg=BLANCO, fg=AZUL); etiqueta_usuario.pack(anchor="w", pady=(12, 5))
+git add git-hub.pyetiqueta_usuario = tk.Label(cuerpo, text="INGRESA TU USUARIO", font=("Segoe UI", 9, "bold"), bg=BLANCO, fg=AZUL); etiqueta_usuario.pack(anchor="w", pady=(12, 5))
 frame_user = tk.Frame(cuerpo, bg=CAMPO, highlightthickness=1, highlightbackground="#DCE5F0"); frame_user.pack(fill="x", ipady=2)
 icono_usuario = tk.Label(frame_user, text="♟", font=("Segoe UI", 16), bg=CAMPO, fg=AZUL_CLARO); icono_usuario.pack(side="left", padx=(12, 8))
 entrada_usuario = tk.Entry(frame_user, font=("Segoe UI", 11), bg=CAMPO, fg=TEXTO, insertbackground=AZUL, relief="flat", bd=0); entrada_usuario.pack(side="left", fill="x", expand=True, padx=(0, 12), pady=11)
