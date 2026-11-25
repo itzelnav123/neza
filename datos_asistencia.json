@@ -2,14 +2,14 @@
     "alumnos": [
         {
             "nombre": "Juan Pérez",
-            "asistencias": 12,
-            "faltas": 3,
+            "asistencias": 13,
+            "faltas": 2,
             "retardos": 1
         },
         {
             "nombre": "María López",
-            "asistencias": 13,
-            "faltas": 3,
+            "asistencias": 14,
+            "faltas": 2,
             "retardos": 1
         },
         {
@@ -17,6 +17,36 @@
             "asistencias": 12,
             "faltas": 3,
             "retardos": 1
+        },
+        {
+            "nombre": "Juan",
+            "asistencias": 1,
+            "faltas": 0,
+            "retardos": 0
+        },
+        {
+            "nombre": "pedro",
+            "asistencias": 1,
+            "faltas": 0,
+            "retardos": 0
+        },
+        {
+            "nombre": "gabriela",
+            "asistencias": 0,
+            "faltas": 0,
+            "retardos": 1
+        },
+        {
+            "nombre": "Balaam Gutierrez",
+            "asistencias": 0,
+            "faltas": 0,
+            "retardos": 1
+        },
+        {
+            "nombre": "Diego Alva",
+            "asistencias": 0,
+            "faltas": 1,
+            "retardos": 0
         }
     ],
     "registros": [
@@ -42,7 +72,7 @@
             "fecha": "2026-11-25",
             "nombre": "Juan Pérez",
             "grupo": "4° A",
-            "estado": "Falta"
+            "estado": "Justificada"
         },
         {
             "fecha": "2026-11-25",
@@ -60,38 +90,54 @@
             "fecha": "2026-11-26",
             "nombre": "Juan Pérez",
             "grupo": "4° A",
-            "estado": "Falta"
+            "estado": "Presente"
         },
         {
             "fecha": "2026-11-26",
             "nombre": "María López",
             "grupo": "4° A",
-            "estado": "Falta"
+            "estado": "Presente"
         },
         {
             "fecha": "2026-11-26",
             "nombre": "Carlos Gómez",
             "grupo": "4° A",
             "estado": "Presente"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "Juan",
+            "grupo": "4° A",
+            "estado": "Presente"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "pedro",
+            "grupo": "4° A",
+            "estado": "Presente"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "gabriela",
+            "grupo": "4° A",
+            "estado": "Retardo"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "Balaam Gutierrez",
+            "grupo": "4° A",
+            "estado": "Retardo"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "Diego Alva",
+            "grupo": "4° A",
+            "estado": "Falta"
         }
     ],
     "alertas": [
         {
             "nombre": "Carlos Gómez",
-            "grupo": "4° A",
-            "faltas": 3,
-            "estado": "Pendiente de seguimiento",
-            "fecha": "2026-11-24"
-        },
-        {
-            "nombre": "Juan Pérez",
-            "grupo": "4° A",
-            "faltas": 3,
-            "estado": "Pendiente de seguimiento",
-            "fecha": "2026-11-24"
-        },
-        {
-            "nombre": "María López",
             "grupo": "4° A",
             "faltas": 3,
             "estado": "Pendiente de seguimiento",
@@ -122,6 +168,14 @@
             "archivo": "Avance manual director 1.pdf",
             "ruta": "c:\\Users\\hp\\Documents\\proyecto1\\neza\\justificantes_adjuntos\\20261124_114214_957588_Avance manual director 1.pdf",
             "fecha_subida": "2026-11-24T11:42:14"
+        },
+        {
+            "nombre": "Juan Pérez",
+            "fecha": "2026-11-25",
+            "motivo": "Salud",
+            "archivo": "ACTIVIDAD BD.docx",
+            "ruta": "c:\\Users\\hp\\Documents\\proyecto1\\neza\\justificantes_adjuntos\\20261124_171818_830156_ACTIVIDAD BD.docx",
+            "fecha_subida": "2026-11-24T17:18:18"
         }
     ],
     "grupos_escolares": {

@@ -7,8 +7,10 @@ import os
 import shutil
 import subprocess
 import sys
-
 import mysql.connector
+
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from tkinter import messagebox
 
@@ -616,6 +618,7 @@ def abrir_docente():
                      bg=bg_fila, fg=C("secundario"), font=("Segoe UI", 9)).pack(side="left", padx=10)
 
     def mostrar_inicio():
+
         nonlocal entrada_nombre, entrada_fecha, frame_tabla_checks
         limpiar_panel()
         fila_info = tk.Frame(panel_doc, bg=C("fondo"))
@@ -684,6 +687,334 @@ def abrir_docente():
                           f"{alerta['faltas']} faltas — {alerta['estado']}",
                      bg=tarjeta_alerta.cget("bg"), fg=C("rojo"),
                      font=("Segoe UI", 11, "bold"), justify="left").pack(anchor="w", padx=14, pady=12)
+    
+    def mostrar_graficas():
+        limpiar_panel()
+
+        # PALETA DE COLORES PASTEL
+        AZUL = "#EAF2FF"
+        AZUL_TEXTO = "#416A9C"
+        VERDE = "#E5F5EB"
+        VERDE_TEXTO = "#438665"
+        ROSA = "#FCEBED"
+        ROSA_TEXTO = "#B66C78"
+        NARANJA = "#FFF3E2"
+        NARANJA_TEXTO = "#B8874A"
+
+        # ENCABEZADO
+        encabezado_graf = tk.Frame(panel_doc, bg=C("fondo"))
+        encabezado_graf.pack(fill="x", padx=22, pady=(20, 12))
+
+        tk.Label(
+            encabezado_graf,
+            text="ESTADÍSTICAS DE ASISTENCIA",
+            bg=C("fondo"),
+            fg=C("texto"),
+            font=("Segoe UI", 20, "bold")
+        ).pack(anchor="w")
+
+        tk.Label(
+            encabezado_graf,
+            text="Resumen general del grupo 4° A",
+            bg=C("fondo"),
+            fg=C("secundario"),
+            font=("Segoe UI", 10)
+        ).pack(anchor="w", pady=(3, 0))
+
+        # TARJETAS
+        marco_tarjetas = tk.Frame(panel_doc, bg=C("fondo"))
+        marco_tarjetas.pack(fill="x", padx=18, pady=10)
+
+        for col in range(4):
+            marco_tarjetas.columnconfigure(col, weight=1)
+
+        tarjetas = [
+            ("ALUMNOS", len(alumnos), AZUL, AZUL_TEXTO),
+            ("ASISTENCIAS", 0, VERDE, VERDE_TEXTO),
+            ("FALTAS", 0, ROSA, ROSA_TEXTO),
+            ("RETARDOS", 0, NARANJA, NARANJA_TEXTO)
+        ]
+
+        variables = []
+
+        for i, (titulo, valor, fondo, color) in enumerate(tarjetas):
+            tarjeta = tk.Frame(
+                marco_tarjetas,
+                bg=fondo,
+                padx=8,
+                pady=13,
+                highlightbackground="#E1E7EF",
+                highlightthickness=1
+            )
+            tarjeta.grid(
+                row=0,
+                column=i,
+                sticky="nsew",
+                padx=4,
+                pady=4
+            )
+
+            tk.Label(
+                tarjeta,
+                text=titulo,
+                bg=fondo,
+                fg=color,
+                font=("Segoe UI", 9, "bold")
+            ).pack()
+
+            variable = tk.StringVar(value=str(valor))
+            variables.append(variable)
+
+            tk.Label(
+                tarjeta,
+                textvariable=variable,
+                bg=fondo,
+                fg=color,
+                font=("Segoe UI", 23, "bold")
+            ).pack(pady=(5, 0))
+
+        # CONTROLES DE CONSULTA
+        marco_consulta = tk.Frame(
+            panel_doc,
+            bg=C("tarjeta"),
+            highlightbackground=C("borde"),
+            highlightthickness=1,
+            padx=14,
+            pady=12
+        )
+        marco_consulta.pack(fill="x", padx=22, pady=12)
+
+        tk.Label(
+            marco_consulta,
+            text="CONSULTAR ASISTENCIA",
+            bg=C("tarjeta"),
+            fg=C("texto"),
+            font=("Segoe UI", 11, "bold")
+        ).pack(anchor="w", pady=(0, 8))
+
+        fila_controles = tk.Frame(
+            marco_consulta,
+            bg=C("tarjeta")
+        )
+        fila_controles.pack(fill="x")
+
+        tipo_consulta = tk.StringVar(value="General")
+
+        selector = ttk.Combobox(
+            fila_controles,
+            textvariable=tipo_consulta,
+            values=["General", "Por día", "Por mes"],
+            state="readonly",
+            width=15
+        )
+        selector.pack(side="left", padx=(0, 10))
+
+        # SELECTOR DE FECHA
+        calendario = tk.Frame(
+            fila_controles,
+            bg=C("tarjeta")
+        )
+
+        entrada_dia = ttk.Entry(calendario, width=13)
+        entrada_dia.insert(0, date.today().isoformat())
+        entrada_dia.pack(side="left", padx=4)
+
+        entrada_mes = ttk.Combobox(
+            calendario,
+            values=[
+                "Enero", "Febrero", "Marzo", "Abril",
+                "Mayo", "Junio", "Julio", "Agosto",
+                "Septiembre", "Octubre", "Noviembre", "Diciembre"
+            ],
+            state="readonly",
+            width=13
+        )
+        entrada_mes.set("Noviembre")
+        entrada_mes.pack(side="left", padx=4)
+
+        # ÁREA DE GRÁFICA
+        marco_grafica = tk.Frame(
+            panel_doc,
+            bg=C("tarjeta"),
+            highlightbackground=C("borde"),
+            highlightthickness=1
+        )
+        marco_grafica.pack(
+            fill="both",
+            expand=True,
+            padx=22,
+            pady=10
+        )
+
+        figura = Figure(figsize=(8, 4), dpi=100)
+        figura.patch.set_facecolor("#FFFFFF")
+
+        ax = figura.add_subplot(111)
+        lienzo = FigureCanvasTkAgg(
+            figura,
+            master=marco_grafica
+        )
+        lienzo.get_tk_widget().pack(
+            fill="both",
+            expand=True,
+            padx=10,
+            pady=10
+        )
+
+        def actualizar_grafica():
+            tipo = tipo_consulta.get()
+            filtrados = []
+
+            if tipo == "Por día":
+                fecha = entrada_dia.get().strip()
+
+                try:
+                    date.fromisoformat(fecha)
+                except ValueError:
+                    messagebox.showerror(
+                        "Fecha incorrecta",
+                        "La fecha debe escribirse como AAAA-MM-DD."
+                    )
+                    return
+
+            elif tipo == "Por mes":
+                mes = entrada_mes.current() + 1
+
+            for r in registros:
+                if r.get("grupo", GRUPO_DOCENTE) != GRUPO_DOCENTE:
+                    continue
+
+                fecha_registro = r.get("fecha", "")
+
+                if tipo == "Por día":
+                    if fecha_registro != fecha:
+                        continue
+
+                elif tipo == "Por mes":
+                    try:
+                        fecha_obj = date.fromisoformat(fecha_registro)
+                    except ValueError:
+                        continue
+
+                    if fecha_obj.month != mes:
+                        continue
+
+                filtrados.append(r)
+
+            presentes = sum(
+                r.get("estado") == "Presente"
+                for r in filtrados
+            )
+
+            faltas = sum(
+                r.get("estado") == "Falta"
+                for r in filtrados
+            )
+
+            retardos = sum(
+                r.get("estado") == "Retardo"
+                for r in filtrados
+            )
+
+            variables[0].set(str(len(alumnos)))
+            variables[1].set(str(presentes))
+            variables[2].set(str(faltas))
+            variables[3].set(str(retardos))
+
+            ax.clear()
+
+            nombres = [
+                "Asistencias",
+                "Faltas",
+                "Retardos"
+            ]
+
+            valores = [
+                presentes,
+                faltas,
+                retardos
+            ]
+
+            colores = [
+                "#A9D8BA",
+                "#E8AEB7",
+                "#F2D1A5"
+            ]
+
+            barras = ax.bar(
+                nombres,
+                valores,
+                color=colores,
+                width=0.55
+            )
+
+            ax.set_title(
+                "Resumen general del grupo 4° A",
+                fontsize=13,
+                color="#416A9C",
+                fontweight="bold",
+                pad=15
+            )
+
+            ax.set_ylabel(
+                "Cantidad de registros",
+                color="#667085"
+            )
+
+            ax.set_facecolor("#FFFFFF")
+            ax.grid(
+                axis="y",
+                linestyle="--",
+                alpha=0.2
+            )
+            ax.set_axisbelow(True)
+
+            for barra in barras:
+                altura = barra.get_height()
+                ax.text(
+                    barra.get_x() + barra.get_width() / 2,
+                    altura,
+                    str(int(altura)),
+                    ha="center",
+                    va="bottom",
+                    fontsize=11,
+                    color="#526477",
+                    fontweight="bold"
+                )
+
+            figura.tight_layout()
+            lienzo.draw()
+
+        def cambiar_consulta(event=None):
+            calendario.pack_forget()
+
+            if tipo_consulta.get() == "Por día":
+                entrada_mes.pack_forget()
+                calendario.pack(side="left")
+                entrada_dia.pack(side="left", padx=4)
+
+            elif tipo_consulta.get() == "Por mes":
+                entrada_dia.pack_forget()
+                calendario.pack(side="left")
+                entrada_mes.pack(side="left", padx=4)
+
+            actualizar_grafica()
+
+        boton_padre(
+            fila_controles,
+            "Actualizar",
+            actualizar_grafica,
+            "#B9D5F5",
+            "#315B91"
+        ).pack(side="left", padx=10)
+
+        selector.bind(
+            "<<ComboboxSelected>>",
+            cambiar_consulta
+        )
+
+        cambiar_consulta()
+
 
     def mostrar_justificantes():
         limpiar_panel()
@@ -957,26 +1288,38 @@ def abrir_docente():
     def cambiar_vista_docente(nombre):
         nonlocal vista_docente_actual
         vista_docente_actual = nombre
+
         for b in botones_menu_doc:
             clave_boton = b.cget("text").strip().split("   ")[-1]
             seleccionado = clave_boton == nombre or b.cget("text").strip() == nombre
             b.configure(bg=C("seleccion_barra") if seleccionado else C("barra"),
-                         fg=C("texto_barra"),
-                         activebackground=C("hover_barra"),
-                         activeforeground=C("texto_barra"),
-                         font=("Segoe UI", 10, "bold" if seleccionado else "normal"))
+                        fg=C("texto_barra"),
+                        activebackground=C("hover_barra"),
+                        activeforeground=C("texto_barra"),
+                        font=("Segoe UI", 10, "bold" if seleccionado else "normal"))
+
         if nombre == "Inicio":
             mostrar_inicio()
         elif nombre == "Justificantes":
             mostrar_justificantes()
+        elif nombre == "Graficas":
+            mostrar_graficas()
         else:
             mostrar_etica()
+
+
+        
 
     def construir_menu_docente():
         botones_menu_doc.clear()
         for w in menu_frame_doc.winfo_children():
             w.destroy()
-        opciones_doc = [("⌂   Inicio", "Inicio"), ("▤   Justificantes", "Justificantes"), ("✎   Reportes", "Reportes")]
+        opciones_doc = [
+            ("⌂   Inicio", "Inicio"),
+            ("▤   Justificantes", "Justificantes"),
+            ("✎   Reportes", "Reportes"),
+            ("▥   Gráficas", "Graficas")
+        ]
         compacto = False 
         for texto, clave in opciones_doc:
             texto_boton = texto if not compacto else texto.split("   ")[-1]
