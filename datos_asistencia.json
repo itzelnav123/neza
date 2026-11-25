@@ -1,0 +1,143 @@
+{
+    "alumnos": [
+        {
+            "nombre": "Juan Pérez",
+            "asistencias": 12,
+            "faltas": 3,
+            "retardos": 1
+        },
+        {
+            "nombre": "María López",
+            "asistencias": 13,
+            "faltas": 3,
+            "retardos": 1
+        },
+        {
+            "nombre": "Carlos Gómez",
+            "asistencias": 12,
+            "faltas": 3,
+            "retardos": 1
+        }
+    ],
+    "registros": [
+        {
+            "fecha": "2026-11-24",
+            "nombre": "María López",
+            "grupo": "4° A",
+            "estado": "Justificada"
+        },
+        {
+            "fecha": "2026-11-24",
+            "nombre": "Juan Pérez",
+            "grupo": "4° A",
+            "estado": "Retardo"
+        },
+        {
+            "fecha": "2026-11-24",
+            "nombre": "Carlos Gómez",
+            "grupo": "4° A",
+            "estado": "Retardo"
+        },
+        {
+            "fecha": "2026-11-25",
+            "nombre": "Juan Pérez",
+            "grupo": "4° A",
+            "estado": "Falta"
+        },
+        {
+            "fecha": "2026-11-25",
+            "nombre": "María López",
+            "grupo": "4° A",
+            "estado": "Falta"
+        },
+        {
+            "fecha": "2026-11-25",
+            "nombre": "Carlos Gómez",
+            "grupo": "4° A",
+            "estado": "Presente"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "Juan Pérez",
+            "grupo": "4° A",
+            "estado": "Falta"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "María López",
+            "grupo": "4° A",
+            "estado": "Falta"
+        },
+        {
+            "fecha": "2026-11-26",
+            "nombre": "Carlos Gómez",
+            "grupo": "4° A",
+            "estado": "Presente"
+        }
+    ],
+    "alertas": [
+        {
+            "nombre": "Carlos Gómez",
+            "grupo": "4° A",
+            "faltas": 3,
+            "estado": "Pendiente de seguimiento",
+            "fecha": "2026-11-24"
+        },
+        {
+            "nombre": "Juan Pérez",
+            "grupo": "4° A",
+            "faltas": 3,
+            "estado": "Pendiente de seguimiento",
+            "fecha": "2026-11-24"
+        },
+        {
+            "nombre": "María López",
+            "grupo": "4° A",
+            "faltas": 3,
+            "estado": "Pendiente de seguimiento",
+            "fecha": "2026-11-24"
+        }
+    ],
+    "archivos_justificantes": [
+        {
+            "nombre": "María López",
+            "fecha": "2026-11-24",
+            "motivo": "kjhgfd",
+            "archivo": "AVANCE CODIGO NEZA.docx",
+            "ruta": "c:\\Users\\hp\\Documents\\proyecto1\\neza\\justificantes_adjuntos\\20261124_105628_165031_AVANCE CODIGO NEZA.docx",
+            "fecha_subida": "2026-11-24T10:56:28"
+        },
+        {
+            "nombre": "Carlos Gómez",
+            "fecha": "2026-11-24",
+            "motivo": "KJMN5JTN3JINJI",
+            "archivo": "Actividad tkinter en git portada.pdf",
+            "ruta": "c:\\Users\\hp\\Documents\\proyecto1\\neza\\justificantes_adjuntos\\20261124_114132_765038_Actividad tkinter en git portada.pdf",
+            "fecha_subida": "2026-11-24T11:41:32"
+        },
+        {
+            "nombre": "María López",
+            "fecha": "2026-11-24",
+            "motivo": "JNIJNJR",
+            "archivo": "Avance manual director 1.pdf",
+            "ruta": "c:\\Users\\hp\\Documents\\proyecto1\\neza\\justificantes_adjuntos\\20261124_114214_957588_Avance manual director 1.pdf",
+            "fecha_subida": "2026-11-24T11:42:14"
+        }
+    ],
+    "grupos_escolares": {
+        "1° A": [
+            "JUANI9TO LOPEZ",
+            "PEDRO PICAPIEDRA",
+            "LA PANTERA ROSA"
+        ],
+        "2° A": [],
+        "3° A": [],
+        "4° A": [
+            "Juan Pérez",
+            "María López",
+            "Carlos Gómez"
+        ],
+        "5° A": [],
+        "6° A": []
+    }
+}
